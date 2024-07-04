@@ -11,4 +11,7 @@
 ## for front-back
 ### python manage.py runserver
 
+## for database
+### run the sql to create new database
+
 ## remember to amend the config in settings.py
