@@ -1,5 +1,5 @@
-import json
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 from django.http import JsonResponse
@@ -25,24 +25,38 @@ def get_college_logo(request, filename):
     return None
 
 def crawl_college_logo():
+        def download_image(photo_url):
+        try:
+            logo = requests.get(photo_url, timeout=20)
+            if logo.status_code == 200:
+                # 构建保存图片的路径
+                save_path = os.path.dirname(os.path.abspath(__file__)) + '\\static\\' + \
+                            photo_url.split('\\')[-1]
+                with open(save_path, 'wb') as f:
+                    f.write(logo.content)
+                print(f"图片已下载: {save_path}")
+            else:
+                print(f"图片下载失败，状态码：{logo.status_code}")
+        except Exception as e:
+            print(f"下载图片时发生错误: {e}")
+
     url = 'https://www.shanghairanking.cn/_nuxt/static/1718865654/rankings/bcur/202411/payload.js'
     r = requests.get(url, timeout=20)
     if r.status_code == 200:
         r.encoding = 'utf-8'
         content = r.text
+        photo_urls = []
+
         while content.find('univUp:"') != -1:
-            # 切出校徽地址
             content = content[content.find('univLogo:"') + 10:]
             collegeLogo = content[:content.find('"')]
             Logo_name = collegeLogo[collegeLogo.find('u002F') + 5:]
             photo_url = 'https://www.shanghairanking.cn/_uni/' + collegeLogo[:collegeLogo.find('u002F')] + Logo_name
-            logo = requests.get(photo_url)
-            try:
-                with open(os.path.dirname(os.path.abspath(__file__)) + '\\static\\' + Logo_name,
-                          'wb') as f:
-                    f.write(logo.content)
-            except Exception as e:
-                pass
+            photo_urls.append(photo_url)
+            print(photo_url)
+        # 使用线程池下载图片,max_workers为线程池中线程的数量
+        with ThreadPoolExecutor(max_workers=30) as executor:
+            executor.map(download_image, photo_urls)
 
 
 def crawl_college_data(request):
