@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { reactive, toRaw } from 'vue'
+import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { request } from '../utils/request.js'
+import { request } from '@/utils/request'
 interface college {
   id: number
   rank: number
@@ -16,7 +16,7 @@ interface college {
 export const useCollegeStore = defineStore('colleges', () => {
   const colleges = reactive<college[]>([])
   const getCollegeInfo = async () => {
-    const result = await request('/colleges', {}, 'GET')
+    const result = await request('/college/', {}, 'GET')
     if (result.code == 200) {
       ElMessage({
         message: '获取数据成功',

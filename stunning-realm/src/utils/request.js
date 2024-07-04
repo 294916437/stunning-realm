@@ -14,8 +14,7 @@ service.interceptors.request.use(
     // 配置请求头
     config.headers = {
       'Content-Type': 'application/json;charset=UTF-8',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Cache-Control': 'no-store'
+      'X-Requested-With': 'XMLHttpRequest'
     }
     return config
   },

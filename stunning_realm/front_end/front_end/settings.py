@@ -76,7 +76,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 更改为你的数据库类型
-        'NAME': '',  # 数据表名称
+        'NAME': '',  # 数据库名称
         'USER': '',  # 数据库用户名
         'PASSWORD': '',  # 数据库密码
         'HOST': '',  # 数据库主机，如果在其他服务器上，填写服务器地址

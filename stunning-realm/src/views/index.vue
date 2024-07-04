@@ -73,7 +73,11 @@
                 <template #default="scope">
                   <div class="univname-container">
                     <div class="logo">
-                      <el-avatar :size="60" src=""></el-avatar>
+                      <el-avatar
+                        :size="60"
+                        :src="logoBaseURL + scope.row.logo_url"
+                        style="background-color: #fff"
+                      ></el-avatar>
                     </div>
                     <div class="univname">
                       <div class="cn-name">{{ scope.row.cn_name }}</div>
@@ -263,6 +267,7 @@ const { colleges } = storeToRefs(store)
 const images = import.meta.glob('../assets/carousel_*.jpg', { eager: true })
 const carouselImages = ref(Object.values(images).map((mod) => mod.default))
 const handleSelect = () => {}
+const logoBaseURL = import.meta.env.VITE_API_POST + '/college/logo/'
 const selectedMenu = ref('2-1')
 const paginationData = reactive({
   current: 1,
@@ -342,6 +347,11 @@ function getPaginationData(page = 1) {
 const filterByProvince = () => {
   if (selectedProvince.value == '全部') {
     getPaginationData()
+  } else if (selectedType.value != '全部') {
+    tableData.value = colleges.value.filter(
+      (college) =>
+        college.province === selectedProvince.value && college.type === selectedType.value
+    )
   } else {
     tableData.value = colleges.value.filter(
       (college) => college.province === selectedProvince.value
@@ -352,6 +362,11 @@ const filterByProvince = () => {
 const filterByType = () => {
   if (selectedType.value == '全部') {
     getPaginationData()
+  } else if (selectedProvince.value != '全部') {
+    tableData.value = colleges.value.filter(
+      (college) =>
+        college.type === selectedType.value && college.province === selectedProvince.value
+    )
   } else {
     tableData.value = colleges.value.filter((college) => college.type === selectedType.value)
   }
